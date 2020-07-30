@@ -1,5 +1,7 @@
-export default {
-  multiply(a: number, b: number) {
-    return Promise.resolve(a * b);
-  },
-};
+export { useWebSocket as default } from './lib/use-websocket';
+
+export { SendMessage, Options } from './lib/types';
+
+export { useSocketIO } from './lib/use-socket-io';
+
+export { ReadyState } from './lib/constants';

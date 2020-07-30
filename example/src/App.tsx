@@ -1,25 +1,47 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import UseWebsocket from 'react-native-use-websocket';
+import useWebSocket, { ReadyState } from '../../src';
+import { Button, Text, FlatList } from 'react-native';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [socketUrl] = React.useState('wss://echo.websocket.org');
+  const messageHistory = React.useRef<any>([]);
 
-  React.useEffect(() => {
-    UseWebsocket.multiply(3, 7).then(setResult);
-  }, []);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  messageHistory.current = React.useMemo(
+    () => messageHistory.current.concat(lastMessage),
+    [lastMessage]
+  );
+
+  const sendM = () => sendMessage('Hello');
+  const handleClickSendMessage = React.useCallback(sendM, [sendM]);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
 
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <>
+      <Button
+        onPress={handleClickSendMessage}
+        disabled={readyState !== ReadyState.OPEN}
+        title={"Click Me to send 'Hello'"}
+      />
+      <Text>The WebSocket is currently {connectionStatus}</Text>
+      {lastMessage ? <Text>Last message: {lastMessage.data}</Text> : null}
+      <FlatList
+        keyExtractor={(item, i) => {
+          return item.toString() + i.toString();
+        }}
+        data={messageHistory.current}
+        renderItem={({ item }) =>
+          item && item.message && <Text>{item.message.data}</Text>
+        }
+      />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
