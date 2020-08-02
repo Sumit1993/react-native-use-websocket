@@ -22,7 +22,7 @@
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
     "release": "release-it",
     "pods": "cd example && pod-install --quiet"
@@ -32,7 +32,10 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/Sumit1993/react-native-use-websocket",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sumit1993/react-native-use-websocket.git"
+  },
   "author": "Sumit Patel <sumitpatel.14may@gmail.com> (https://github.com/Sumit1993)",
   "license": "MIT",
   "bugs": {
@@ -117,7 +120,10 @@
       ]
     }
   },
-  "eslintIgnore": ["node_modules/", "lib/"],
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
@@ -128,6 +134,15 @@
   "@react-native-community/bob": {
     "source": "src",
     "output": "lib",
-    "targets": ["commonjs", "module", "typescript"]
-  }
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "directories": {
+    "example": "example",
+    "lib": "lib"
+  },
+  "dependencies": {}
 }

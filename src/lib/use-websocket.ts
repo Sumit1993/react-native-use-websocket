@@ -10,6 +10,7 @@ import type {
   SendJsonMessage,
   WebSocketMessage,
   WebSocketHook,
+  WebSocketEventMap,
 } from './types';
 
 export const useWebSocket = (
@@ -17,7 +18,7 @@ export const useWebSocket = (
   options: Options = DEFAULT_OPTIONS,
   connect: boolean = true,
 ): WebSocketHook => {
-  const [lastMessage, setLastMessage] = useState<WebSocketEventMap['message']>(null);
+  const [lastMessage, setLastMessage] = useState<WebSocketEventMap['message']>({});
   const [readyState, setReadyState] = useState<ReadyStateState>({});
   const lastJsonMessage = useMemo(() => {
     if (lastMessage) {
@@ -118,7 +119,7 @@ export const useWebSocket = (
         expectClose = true;
         if (webSocketProxy.current) webSocketProxy.current = null;
         removeListeners?.();
-        setLastMessage(null);
+        setLastMessage({});
       };
     }else{
       return;

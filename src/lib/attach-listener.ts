@@ -1,7 +1,7 @@
 import type { MutableRefObject } from 'react';
 import { setUpSocketIOPing } from './socket-io';
 import { DEFAULT_RECONNECT_LIMIT, DEFAULT_RECONNECT_INTERVAL_MS, ReadyState } from './constants';
-import type { Options } from './types';
+import type { Options, WebSocketEventMap } from './types';
 
 export interface Setters {
   setLastMessage: (message: WebSocketEventMap['message']) => void;

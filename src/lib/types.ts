@@ -28,27 +28,42 @@ export interface Options {
 }
 
 export type ReadyStateState = {
-  [url: string]: ReadyState,
-}
+  [url: string]: ReadyState;
+};
 
-export type WebSocketMessage = string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView;
+export type WebSocketMessage =
+  | string
+  | ArrayBuffer
+  | SharedArrayBuffer
+  | Blob
+  | ArrayBufferView;
 
 export type SendMessage = (message: WebSocketMessage) => void;
 export type SendJsonMessage = (jsonMessage: any) => void;
 
 export type Subscriber<T = WebSocketEventMap['message']> = {
-  setLastMessage: (message: T) => void,
-  setReadyState: (readyState: ReadyState) => void,
-  optionsRef: MutableRefObject<Options>,
-  reconnectCount: MutableRefObject<number>,
-  reconnect: MutableRefObject<() => void>,
-}
+  setLastMessage: (message: T) => void;
+  setReadyState: (readyState: ReadyState) => void;
+  optionsRef: MutableRefObject<Options>;
+  reconnectCount: MutableRefObject<number>;
+  reconnect: MutableRefObject<() => void>;
+};
 
 export type WebSocketHook<T = WebSocketEventMap['message']> = {
-  sendMessage: SendMessage,
-  sendJsonMessage: SendJsonMessage,
-  lastMessage: T,
-  lastJsonMessage: any,
-  readyState: ReadyState,
-  getWebSocket: () => WebSocket,
-}
+  sendMessage: SendMessage;
+  sendJsonMessage: SendJsonMessage;
+  lastMessage: T;
+  lastJsonMessage: any;
+  readyState: ReadyState;
+  getWebSocket: () => WebSocket;
+};
+
+// code from typescript/lib/lib.dom.d.ts
+// It is useful when using react-native with typescript.
+// Or you can add dom libarary as `lib: ["esnext" ,"dom"]` in tsconfig.json
+
+export type WebSocketEventMap = {
+  close: WebSocketCloseEvent;
+  error: WebSocketErrorEvent;
+  message: WebSocketMessageEvent;
+};

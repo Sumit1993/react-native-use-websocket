@@ -1,9 +1,9 @@
 import * as React from 'react';
-import useWebSocket, { ReadyState } from '../../src';
+import useWebSocket, { ReadyState } from 'react-native-use-websocket';
 import { Button, Text, FlatList } from 'react-native';
 
-export default function App() {
-  const [socketUrl] = React.useState('wss://echo.websocket.org');
+const App: React.FC = () => {
+  const socketUrl = 'wss://echo.websocket.org';
   const messageHistory = React.useRef<any>([]);
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
@@ -22,7 +22,7 @@ export default function App() {
     [ReadyState.CLOSING]: 'Closing',
     [ReadyState.CLOSED]: 'Closed',
     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
+  };
 
   return (
     <>
@@ -44,4 +44,6 @@ export default function App() {
       />
     </>
   );
-}
+};
+
+export default App;

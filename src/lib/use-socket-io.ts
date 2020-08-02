@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useWebSocket } from './use-websocket'
 import { DEFAULT_OPTIONS } from './constants'
-import type { Options, WebSocketHook } from './types';
+import type { Options, WebSocketHook, WebSocketEventMap } from './types';
 
 export interface SocketIOMessageData {
   type: string,

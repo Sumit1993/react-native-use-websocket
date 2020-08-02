@@ -1,6 +1,7 @@
 import { sharedWebSockets } from './globals';
 import { DEFAULT_RECONNECT_LIMIT, DEFAULT_RECONNECT_INTERVAL_MS, ReadyState } from './constants';
 import { getSubscribers } from './manage-subscribers';
+import type { WebSocketEventMap } from './types';
 
 export const attachSharedListeners = (
   webSocketInstance: WebSocket,
