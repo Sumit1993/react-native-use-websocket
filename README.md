@@ -1,6 +1,3 @@
-
-  
-
 # React Native useWebSocket
 
   
@@ -96,53 +93,30 @@ From the example above, the component will rerender every time the `readyState` 
   
 
 ```sh
-
 npm install react-native-use-websocket
-
 ```
 
   
 
 ```js
-
-import  useWebSocket  from  'react-native-use-websocket';
-
-  
+import useWebSocket from 'react-native-use-websocket';
 
 // In functional React component
-
-  
-
 // This can also be an async getter function. See notes below on Async Urls.
 
-const  socketUrl = 'wss://echo.websocket.org';
-
-  
-
+const socketUrl = 'wss://echo.websocket.org';
 const {
-
-sendMessage,
-
-sendJsonMessage,
-
-lastMessage,
-
-lastJsonMessage,
-
-readyState,
-
-getWebSocket
-
+    sendMessage,
+    sendJsonMessage,
+    lastMessage,
+    lastJsonMessage,
+    readyState,
+    getWebSocket
 } = useWebSocket(socketUrl, {
-
-onOpen: () =>  console.log('opened'),
-
-//Will attempt to reconnect on all close events, such as server shutting down
-
-shouldReconnect: (closeEvent) =>  true,
-
+    onOpen: () => console.log('opened'),
+    //Will attempt to reconnect on all close events, such as server shutting down
+    shouldReconnect: (closeEvent) => true,
 });
-
 ```
 
   
@@ -162,41 +136,24 @@ Instead of passing a string as the first argument to useWebSocket, you can pass 
   
 
 ```js
-
-import  useWebSocket  from  'react-use-websocket';
-
-  
+import useWebSocket from 'react-use-websocket';
 
 // In functional React component
 
-const  getSocketUrl = useCallback(() => {
-
-return  new  Promise(resolve  => {
-
-setTimeout(() => {
-
-resolve('wss://echo.websocket.org');
-
-}, 2000);
-
-});
-
+const getSocketUrl = useCallback(() => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve('wss://echo.websocket.org');
+        }, 2000);
+    });
 }, []);
 
-  
-
 const {
-
-sendMessage,
-
-lastMessage,
-
-readyState,
-
-getWebSocket
-
+    sendMessage,
+    lastMessage,
+    readyState,
+    getWebSocket
 } = useWebSocket(getSocketUrl, STATIC_OPTIONS);
-
 ```
 
   
@@ -208,9 +165,7 @@ getWebSocket
 ### sendMessage
 
 ```ts
-
 type  sendMessage = (message: string) =>  void;
-
 ```
 
 The argument sent through sendMessage will be passed directly to WebSocket#`send`. `sendMessage` will be static, and thus can be passed down through children components without triggering prop changes. Messages sent before the WebSocket is open will be queued up and sent on connection.
@@ -220,9 +175,7 @@ The argument sent through sendMessage will be passed directly to WebSocket#`send
 ### sendJsonMessage
 
 ```ts
-
 type  sendJsonMessage = (message: any) =>  void;
-
 ```
 
 Message will first be passed through `JSON.stringify`.
@@ -232,9 +185,7 @@ Message will first be passed through `JSON.stringify`.
 ### lastMessage
 
 ```ts
-
 type  lastMessage = WebSocketEventMap['message'];
-
 ```
 
 Will be an unparsed `MessageEvent` received from the WebSocket.
@@ -244,9 +195,7 @@ Will be an unparsed `MessageEvent` received from the WebSocket.
 ### lastJsonMessage
 
 ```ts
-
 type  lastMessage = any;
-
 ```
 
 A `JSON.parse`d object from the `lastMessage`. If `lastMessage` is not a valid JSON string, `lastJsonMessage` will be an empty object.
@@ -256,21 +205,13 @@ A `JSON.parse`d object from the `lastMessage`. If `lastMessage` is not a valid J
 ### readyState
 
 ```ts
-
-enum  ReadyState {
-
-UNINSTANTIATED = -1,
-
-CONNECTING = 0,
-
-OPEN = 1,
-
-CLOSING = 2,
-
-CLOSED = 3
-
+enum ReadyState {
+	UNINSTANTIATED = -1,
+	CONNECTING = 0,
+	OPEN = 1,
+	CLOSING = 2,
+	CLOSED = 3
 }
-
 ```
 
 Will be an integer representing the `readyState` of the WebSocket. `-1` is not a valid WebSocket `readyState`, but instead indicates that the WebSocket has not been instantiated yet (either because the url is `null` or connect param is `false`)
@@ -280,9 +221,7 @@ Will be an integer representing the `readyState` of the WebSocket. `-1` is not a
 ### getWebSocket
 
 ```ts
-
 type  getWebSocket = () =>  WebSocket | Proxy<WebSocket>
-
 ```
 
 If the WebSocket is shared, calling this function will lazily instantiate a `Proxy` instance that wraps the underlying WebSocket. You can get and set properties on the return value that will directly interact with the WebSocket, however certain properties/methods are protected (cannot invoke `close` or `send`, and cannot redefine any of the event handlers like `onmessage`, `onclose`, `onopen` and `onerror`. An example of using this:
@@ -290,57 +229,34 @@ If the WebSocket is shared, calling this function will lazily instantiate a `Pro
   
 
 ```js
-
 const {
-
-sendMessage,
-
-lastMessage,
-
-readyState,
-
-getWebSocket
-
-} = useWebSocket('wss://echo.websocket.org', { share:  true });
-
-  
+    sendMessage,
+    lastMessage,
+    readyState,
+    getWebSocket
+} = useWebSocket('wss://echo.websocket.org', {
+    share: true
+});
 
 useEffect(() => {
+  
+    console.log(getWebSocket().binaryType) //=> 'blob'
 
-console.log(getWebSocket().binaryType)
+    //Change binaryType property of WebSocket
+    getWebSocket().binaryType = 'arraybuffer';
+    console.log(getWebSocket().binaryType) //=> 'arraybuffer'
 
-//=> 'blob'
+    //Attempt to change event handler
+    getWebSocket().onmessage = console.log //=> A warning is logged to console: 'The WebSocket's event handlers should be defined through the options object passed into useWebSocket.'
 
-//Change binaryType property of WebSocket
+    //Attempt to change an immutable property
+    getWebSocket().url = 'www.google.com';
+    console.log(getWebSocket().url); //=> 'wss://echo.websocket.org'
 
-getWebSocket().binaryType = 'arraybuffer';
-
-console.log(getWebSocket().binaryType)
-
-//=> 'arraybuffer'
-
-//Attempt to change event handler
-
-getWebSocket().onmessage = console.log
-
-//=> A warning is logged to console: 'The WebSocket's event handlers should be defined through the options object passed into useWebSocket.'
-
-//Attempt to change an immutable property
-
-getWebSocket().url = 'www.google.com';
-
-console.log(getWebSocket().url);
-
-//=> 'wss://echo.websocket.org'
-
-//Attempt to call webSocket#send
-
-getWebSocket().send('Hello from WebSocket');
-
-//=> No message is sent, and no error thrown (a no-op function was returned), but an error will be logged to console: 'Calling methods directly on the WebSocket is not supported at this moment. You must use the methods returned by useWebSocket.'
+    //Attempt to call webSocket#send
+    getWebSocket().send('Hello from WebSocket'); //=> No message is sent, and no error thrown (a no-op function was returned), but an error will be logged to console: 'Calling methods directly on the WebSocket is not supported at this moment. You must use the methods returned by useWebSocket.'
 
 }, []);
-
 ```
 
 If the WebSocket is not shared (via options), then the return value is the underlying WebSocket, and thus methods such as `close` and `send` can be accessed and used.
@@ -354,47 +270,27 @@ By default, `useWebSocket` will not attempt to reconnect to a WebSocket. This be
   
 
 ```js
-
-const  didUnmount = useRef(false);
-
-  
+const didUnmount = useRef(false);
 
 const [sendMessage, lastMessage, readyState] = useWebSocket(
-
-'wss://echo.websocket.org', {
-
-shouldReconnect: (closeEvent) => {
-
-/*
-
-useWebSocket will handle unmounting for you, but this is an example of a
-
-case in which you would not want it to automatically reconnect
-
-*/
-
-return  didUnmount.current === false;
-
-},
-
-reconnectAttempts:  10,
-
-reconnectInterval:  3000,
-
-});
-
-  
+    'wss://echo.websocket.org', {
+        shouldReconnect: (closeEvent) => {
+          
+            /*
+            useWebSocket will handle unmounting for you, but this is an example of a
+            case in which you would not want it to automatically reconnect
+            */
+            return didUnmount.current === false;
+        },
+        reconnectAttempts: 10,
+        reconnectInterval: 3000,
+    });
 
 useEffect(() => {
-
-return () => {
-
-didUnmount.current = true;
-
-};
-
+    return () => {
+        didUnmount.current = true;
+    };
 }, []);
-
 ```
 
   
@@ -402,52 +298,29 @@ didUnmount.current = true;
 ## Options
 
 ```ts
-
-interface  Options {
-
-share?: boolean;
-
-shouldReconnect?: (event: WebSocketEventMap['close']) =>  boolean;
-
-reconnectInterval?: number;
-
-reconnectAttempts?: number;
-
-filter?: (message: WebSocketEventMap['message']) =>  boolean;
-
-retryOnError?: boolean;
-
-onOpen?: (event: WebSocketEventMap['open']) =>  void;
-
-onClose?: (event: WebSocketEventMap['close']) =>  void;
-
-onMessage?: (event: WebSocketEventMap['message']) =>  void;
-
-onError?: (event: WebSocketEventMap['error']) =>  void;
-
-fromSocketIO?: boolean;
-
-queryParams?: {
-
-[key: string]: string | number;
-
-};
-
-protocols?: string | string[];
-options?: {
-
-	[optionName: string]: any;
-
-	headers: {
-
-		[headerName: string]: string;
-
-	};
-
-} | null;
-
+interface Options {
+    share ? : boolean;
+    shouldReconnect ? : (event: WebSocketEventMap['close']) => boolean;
+    reconnectInterval ? : number;
+    reconnectAttempts ? : number;
+    filter ? : (message: WebSocketEventMap['message']) => boolean;
+    retryOnError ? : boolean;
+    onOpen ? : (event: WebSocketEventMap['open']) => void;
+    onClose ? : (event: WebSocketEventMap['close']) => void;
+    onMessage ? : (event: WebSocketEventMap['message']) => void;
+    onError ? : (event: WebSocketEventMap['error']) => void;
+    fromSocketIO ? : boolean;
+    queryParams ? : {
+        [key: string]: string | number;
+    };
+    protocols ? : string | string[];
+    options ? : {
+        [optionName: string]: any;
+        headers: {
+            [headerName: string]: string;
+        };
+    } | null;
 }
-
 ```
 
 ### shouldReconnect
@@ -487,17 +360,12 @@ Pass an object representing an arbitrary number of query parameters, which will 
   
 
 ```js
-
-const  queryParams = {
-
-'user_id':  1,
-
-'room_id':  5
-
+const queryParams = {
+    'user_id': 1,
+    'room_id': 5
 };
 
 //<url>?user_id=1&room_id=5
-
 ```
 
   
@@ -507,31 +375,20 @@ const  queryParams = {
 SocketIO sends messages in a format that isn't JSON-parsable. One example is:
 
 ```
-
 "42["Action",{"key":"value"}]"
-
 ```
 
 An extension of this hook is available by importing `useSocketIO`:
 
 ```js
-
-import { useSocketIO } from  'react-use-websocket';
-
-  
+import { useSocketIO } from 'react-use-websocket';
 
 //Same API in component
-
 const {
-
-sendMessage,
-
-lastMessage,
-
-readyState
-
+    sendMessage,
+    lastMessage,
+    readyState
 } = useSocketIO('socket.io');
-
 ```
 
 It is important to note that `lastMessage` will not be a `MessageEvent`, but instead an object with two keys: `type` and `payload`.
