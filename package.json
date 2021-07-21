@@ -8,12 +8,7 @@
   "react-native": "src/index",
   "source": "src/index",
   "files": [
-    "src",
     "lib",
-    "android",
-    "ios",
-    "cpp",
-    "react-native-use-websocket.podspec",
     "!lib/typescript/example",
     "!**/__tests__",
     "!**/__fixtures__",
@@ -30,7 +25,10 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "websocket",
+    "socket.io",
+    "hook"
   ],
   "repository": {
     "type": "git",
