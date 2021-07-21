@@ -1,6 +1,6 @@
 {
   "name": "react-native-use-websocket",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "React Native Hook designed to provide robust WebSocket integrations to your Components.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
