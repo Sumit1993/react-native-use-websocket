@@ -51,6 +51,7 @@ export const attachSharedListeners = (
             }, subscriber.optionsRef.current.reconnectInterval ?? DEFAULT_RECONNECT_INTERVAL_MS);
           }
         } else {
+          subscriber.optionsRef.current.onReconnectStop && subscriber.optionsRef.current.onReconnectStop(subscriber.optionsRef.current.reconnectAttempts as number);
           console.error(`Max reconnect attempts of ${reconnectAttempts} exceeded`);
         }
       }

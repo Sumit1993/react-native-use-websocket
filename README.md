@@ -309,6 +309,7 @@ interface Options {
     onClose ? : (event: WebSocketEventMap['close']) => void;
     onMessage ? : (event: WebSocketEventMap['message']) => void;
     onError ? : (event: WebSocketEventMap['error']) => void;
+    onReconnectStop?: (numAttempts: number) => void;
     fromSocketIO ? : boolean;
     queryParams ? : {
         [key: string]: string | number;
@@ -339,7 +340,8 @@ Number of milliseconds to wait until it attempts to reconnect. Default is 5000.
 
 Each of `Options#onMessage`, `Options#onError`, `Options#onClose`, and `Options#onOpen` will be called on the corresponding WebSocket event, if provided. Each will be passed the same event provided from the WebSocket.
 
-  
+### onReconnectStop
+If provided in options, will be called when websocket exceeds reconnect limit, either as provided in the options or the default value of 20.  
 
 ### share: Boolean
 

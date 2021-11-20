@@ -47,6 +47,7 @@ export const attachListeners = (
           reconnect();
         }, optionsRef.current.reconnectInterval ?? DEFAULT_RECONNECT_INTERVAL_MS);
       } else {
+        optionsRef.current.onReconnectStop && optionsRef.current.onReconnectStop(reconnectAttempts);
         console.error(`Max reconnect attempts of ${reconnectAttempts} exceeded`);
       }
     }
@@ -60,6 +61,9 @@ export const attachListeners = (
           reconnectCount.current++;
           reconnect();
         }, optionsRef.current.reconnectInterval ?? DEFAULT_RECONNECT_INTERVAL_MS);
+      } else {
+        optionsRef.current.onReconnectStop && optionsRef.current.onReconnectStop(optionsRef.current.reconnectAttempts as number);
+        console.error(`Max reconnect attempts of ${optionsRef.current.reconnectAttempts} exceeded`);
       }
     }
   };
